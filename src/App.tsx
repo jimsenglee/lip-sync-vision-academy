@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,13 @@ import Transcription from "./pages/Transcription";
 import Education from "./pages/Education";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
+
+// New Transcription Pages
+import RealTimeTranscription from "./pages/transcription/RealTimeTranscription";
+import VideoUpload from "./pages/transcription/VideoUpload";
+import VideoGuidelines from "./pages/transcription/VideoGuidelines";
+
+// Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import ContentManagement from "./pages/admin/ContentManagement";
@@ -42,42 +48,71 @@ const App = () => (
             
             {/* Protected User Routes */}
             <Route path="/dashboard" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['user']}>
                 <DashboardLayout>
                   <Dashboard />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
+            
+            {/* Transcription Routes - User Only */}
             <Route path="/transcription" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['user']}>
                 <DashboardLayout>
                   <Transcription />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
+            <Route path="/transcription/realtime" element={
+              <ProtectedRoute allowedRoles={['user']}>
+                <DashboardLayout>
+                  <RealTimeTranscription />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/transcription/upload" element={
+              <ProtectedRoute allowedRoles={['user']}>
+                <DashboardLayout>
+                  <VideoUpload />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/transcription/guidelines" element={
+              <ProtectedRoute allowedRoles={['user']}>
+                <DashboardLayout>
+                  <VideoGuidelines />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            
+            {/* Education Routes - User Only */}
             <Route path="/education" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['user']}>
                 <DashboardLayout>
                   <Education />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
+            
+            {/* Reports Routes - User Only */}
             <Route path="/reports" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['user']}>
                 <DashboardLayout>
                   <Reports />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
+            
+            {/* Profile Routes - Both User and Admin */}
             <Route path="/profile" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['user', 'admin']}>
                 <DashboardLayout>
                   <Profile />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
             <Route path="/settings" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['user', 'admin']}>
                 <DashboardLayout>
                   <Profile />
                 </DashboardLayout>
