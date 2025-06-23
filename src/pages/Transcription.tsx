@@ -1,215 +1,236 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Camera, 
+  Video, 
+  VideoOff, 
   Upload, 
-  HelpCircle,
-  Video,
-  Clock,
+  Play, 
+  Pause, 
+  Square,
+  Settings,
   FileVideo,
-  TrendingUp,
-  CheckCircle
+  Camera,
+  Lightbulb
 } from 'lucide-react';
 
 const Transcription = () => {
-  const transcriptionModes = [
-    {
-      title: 'Real-Time Transcription',
-      description: 'Live lip-reading with your webcam for instant communication',
-      icon: Camera,
-      href: '/transcription/realtime',
-      color: 'bg-blue-500 hover:bg-blue-600',
-      features: ['Live processing', 'Instant feedback', 'Quality monitoring'],
-      recommended: true
-    },
-    {
-      title: 'Video Upload',
-      description: 'Upload video files for accurate transcription with timestamps',
-      icon: Upload,
-      href: '/transcription/upload',
-      color: 'bg-green-500 hover:bg-green-600',
-      features: ['Batch processing', 'Timestamped output', 'SRT export'],
-      recommended: false
-    },
-    {
-      title: 'Video Guidelines',
-      description: 'Learn best practices for optimal transcription accuracy',
-      icon: HelpCircle,
-      href: '/transcription/guidelines',
-      color: 'bg-purple-500 hover:bg-purple-600',
-      features: ['Setup tips', 'Quality checklist', 'Troubleshooting'],
-      recommended: false
-    }
-  ];
+  const [isRecording, setIsRecording] = useState(false);
+  const [transcribedText, setTranscribedText] = useState('');
 
-  const recentSessions = [
-    {
-      type: 'Real-time',
-      duration: '15:30',
-      accuracy: 89,
-      date: '2024-01-20',
-      words: 245
-    },
-    {
-      type: 'Video Upload',
-      duration: '12:45',
-      accuracy: 92,
-      date: '2024-01-19',
-      words: 189
-    },
-    {
-      type: 'Real-time',
-      duration: '8:20',
-      accuracy: 85,
-      date: '2024-01-18',
-      words: 156
-    }
-  ];
+  const mockTranscription = "Hello, how are you today? I hope you're having a wonderful day. The weather looks beautiful outside.";
 
-  const quickStats = [
-    { label: 'Total Sessions', value: '47', icon: Video },
-    { label: 'Avg Accuracy', value: '87%', icon: TrendingUp },
-    { label: 'Total Hours', value: '12.5h', icon: Clock },
-    { label: 'Words Processed', value: '8.2K', icon: FileVideo }
-  ];
-
-  const getAccuracyColor = (accuracy: number) => {
-    if (accuracy >= 90) return 'text-green-600';
-    if (accuracy >= 80) return 'text-yellow-600';
-    return 'text-red-600';
+  const handleStartRecording = () => {
+    setIsRecording(true);
+    // Simulate real-time transcription
+    let currentText = '';
+    const words = mockTranscription.split(' ');
+    let index = 0;
+    
+    const interval = setInterval(() => {
+      if (index < words.length && isRecording) {
+        currentText += (index === 0 ? '' : ' ') + words[index];
+        setTranscribedText(currentText);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 800);
   };
+
+  const handleStopRecording = () => {
+    setIsRecording(false);
+  };
+
+  const tips = [
+    "Ensure good lighting on your face",
+    "Position camera at eye level",
+    "Speak at a moderate pace",
+    "Avoid covering your mouth",
+    "Use a clean background"
+  ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Transcription Hub</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Transcription</h1>
         <p className="text-gray-600 mt-1">
-          Choose your transcription method and start converting speech to text
+          Real-time lip reading and video file transcription
         </p>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {quickStats.map((stat, index) => (
-          <Card key={index}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                </div>
-                <stat.icon className="h-8 w-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Tabs defaultValue="realtime" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="realtime" className="flex items-center gap-2">
+            <Camera className="h-4 w-4" />
+            Real-time
+          </TabsTrigger>
+          <TabsTrigger value="upload" className="flex items-center gap-2">
+            <FileVideo className="h-4 w-4" />
+            Upload Video
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Transcription Modes */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {transcriptionModes.map((mode, index) => (
-          <Card key={index} className="relative hover:shadow-lg transition-shadow group">
-            {mode.recommended && (
-              <div className="absolute -top-2 -right-2 z-10">
-                <Badge className="bg-orange-500 text-white">Recommended</Badge>
-              </div>
-            )}
+        <TabsContent value="realtime" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Video className="h-5 w-5" />
+                    Live Camera Feed
+                  </CardTitle>
+                  <CardDescription>
+                    Position yourself in front of the camera for optimal lip-reading
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center relative">
+                    {isRecording ? (
+                      <div className="text-white text-center">
+                        <Video className="h-16 w-16 mx-auto mb-4 animate-pulse" />
+                        <p>Camera Active - Lip Reading in Progress</p>
+                        <Badge variant="destructive" className="mt-2 animate-pulse">
+                          REC
+                        </Badge>
+                      </div>
+                    ) : (
+                      <div className="text-gray-400 text-center">
+                        <VideoOff className="h-16 w-16 mx-auto mb-4" />
+                        <p>Camera Preview - Click Start to begin</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-center gap-4 mt-6">
+                    {!isRecording ? (
+                      <Button onClick={handleStartRecording} className="flex items-center gap-2">
+                        <Play className="h-4 w-4" />
+                        Start Recording
+                      </Button>
+                    ) : (
+                      <Button onClick={handleStopRecording} variant="destructive" className="flex items-center gap-2">
+                        <Square className="h-4 w-4" />
+                        Stop Recording
+                      </Button>
+                    )}
+                    <Button variant="outline" className="flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      Settings
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>Live Transcription</CardTitle>
+                  <CardDescription>
+                    Real-time text output from lip-reading analysis
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="min-h-32 p-4 bg-gray-50 rounded-lg border">
+                    <p className="text-lg leading-relaxed">
+                      {transcribedText || "Transcribed text will appear here..."}
+                      {isRecording && <span className="animate-pulse">|</span>}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center mt-4">
+                    <div className="flex items-center gap-4">
+                      <Badge variant="outline">Confidence: 87%</Badge>
+                      <Badge variant="outline">WPM: 145</Badge>
+                    </div>
+                    <Button variant="outline" size="sm">
+                      Export Text
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Lightbulb className="h-5 w-5" />
+                    Tips for Better Accuracy
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {tips.map((tip, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-sm text-gray-700">{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Session Stats</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Duration</span>
+                    <span className="text-sm font-medium">00:02:34</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Words</span>
+                    <span className="text-sm font-medium">47</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Accuracy</span>
+                    <span className="text-sm font-medium text-green-600">87%</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="upload" className="space-y-6">
+          <Card>
             <CardHeader>
-              <div className={`inline-flex items-center justify-center w-12 h-12 ${mode.color} text-white rounded-lg mb-4 group-hover:scale-110 transition-transform`}>
-                <mode.icon className="h-6 w-6" />
-              </div>
-              <CardTitle className="text-xl">{mode.title}</CardTitle>
-              <CardDescription>{mode.description}</CardDescription>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="h-5 w-5" />
+                Upload Video File
+              </CardTitle>
+              <CardDescription>
+                Upload a video file for lip-reading transcription with timestamps
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3 mb-6">
-                {mode.features.map((feature, featureIndex) => (
-                  <div key={featureIndex} className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="text-sm text-gray-600">{feature}</span>
-                  </div>
-                ))}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors">
+                <FileVideo className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-lg font-medium mb-2">Drop your video file here</h3>
+                <p className="text-gray-600 mb-4">Supports MP4, AVI, MKV up to 500MB</p>
+                <Button className="flex items-center gap-2 mx-auto">
+                  <Upload className="h-4 w-4" />
+                  Choose File
+                </Button>
               </div>
-              <Button asChild className="w-full">
-                <Link to={mode.href}>Get Started</Link>
-              </Button>
+              
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 className="font-medium text-blue-900 mb-2">Video Guidelines for Best Results:</h4>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li>• Ensure the speaker's face is clearly visible</li>
+                  <li>• Good lighting on the face area</li>
+                  <li>• Minimal background noise</li>
+                  <li>• Speaker should face the camera directly</li>
+                  <li>• Avoid rapid head movements</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
-
-      {/* Recent Sessions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Sessions</CardTitle>
-            <CardDescription>Your latest transcription activities</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentSessions.map((session, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <div>
-                      <div className="font-medium">{session.type}</div>
-                      <div className="text-sm text-gray-600">{session.date}</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className={`font-medium ${getAccuracyColor(session.accuracy)}`}>
-                      {session.accuracy}%
-                    </div>
-                    <div className="text-sm text-gray-600">{session.duration}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Tips for Better Accuracy</CardTitle>
-            <CardDescription>Improve your transcription results</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-                <div>
-                  <div className="font-medium">Optimal Lighting</div>
-                  <div className="text-sm text-gray-600">Ensure your face is well-lit and clearly visible</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-                <div>
-                  <div className="font-medium">Camera Position</div>
-                  <div className="text-sm text-gray-600">Position camera at eye level for best results</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-                <div>
-                  <div className="font-medium">Clear Speech</div>
-                  <div className="text-sm text-gray-600">Speak clearly and at a moderate pace</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-                <div>
-                  <div className="font-medium">Stable Environment</div>
-                  <div className="text-sm text-gray-600">Minimize background distractions and movement</div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
