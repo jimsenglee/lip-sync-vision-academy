@@ -23,13 +23,15 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
+    <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-primary/10 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <Video className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">LipRead AI</span>
+            <Link to="/" className="flex items-center space-x-2 group">
+              <Video className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
+              <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                LipRead AI
+              </span>
             </Link>
           </div>
 
@@ -39,23 +41,25 @@ const Navbar = () => {
                 <span className="text-sm text-gray-700">Welcome, {user.name}</span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:scale-110 transition-transform">
+                      <Avatar className="h-8 w-8 border-2 border-primary/20">
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          {user.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 bg-white" align="end" forceMount>
-                    <DropdownMenuItem onClick={() => navigate('/profile')}>
-                      <User className="mr-2 h-4 w-4" />
+                  <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-sm border-primary/20" align="end" forceMount>
+                    <DropdownMenuItem onClick={() => navigate('/profile')} className="hover:bg-primary/10">
+                      <User className="mr-2 h-4 w-4 text-primary" />
                       <span>Profile</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/settings')}>
-                      <Settings className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem onClick={() => navigate('/settings')} className="hover:bg-primary/10">
+                      <Settings className="mr-2 h-4 w-4 text-primary" />
                       <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
+                    <DropdownMenuItem onClick={handleLogout} className="hover:bg-red-50 text-red-600">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
@@ -64,10 +68,10 @@ const Navbar = () => {
               </>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" onClick={() => navigate('/login')}>
+                <Button variant="ghost" onClick={() => navigate('/login')} className="hover:bg-primary/10 hover:text-primary">
                   Sign In
                 </Button>
-                <Button onClick={() => navigate('/register')}>
+                <Button onClick={() => navigate('/register')} className="bg-primary hover:bg-primary/90">
                   Sign Up
                 </Button>
               </div>

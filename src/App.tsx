@@ -18,10 +18,12 @@ import Transcription from "./pages/Transcription";
 import Education from "./pages/Education";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
+import TranscriptionHistory from "./pages/TranscriptionHistory";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import ContentManagement from "./pages/admin/ContentManagement";
 import SystemAnalytics from "./pages/admin/SystemAnalytics";
+import EditFAQ from "./pages/admin/EditFAQ";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -69,6 +71,13 @@ const App = () => (
                 </DashboardLayout>
               </ProtectedRoute>
             } />
+            <Route path="/transcription-history" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <TranscriptionHistory />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -103,6 +112,20 @@ const App = () => (
               <ProtectedRoute requiredRole="admin">
                 <DashboardLayout>
                   <ContentManagement />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/content/faq/:id" element={
+              <ProtectedRoute requiredRole="admin">
+                <DashboardLayout>
+                  <EditFAQ />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/content/faq/new" element={
+              <ProtectedRoute requiredRole="admin">
+                <DashboardLayout>
+                  <EditFAQ />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
