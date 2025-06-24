@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Video, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import BackButton from '@/components/ui/back-button';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -31,13 +32,17 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/10 px-4 animate-fade-in">
+      <div className="absolute top-6 left-6">
+        <BackButton to="/login" />
+      </div>
+      
+      <Card className="w-full max-w-md border-primary/20 shadow-lg animate-scale-in">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Video className="h-12 w-12 text-blue-600" />
+            <Video className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Reset Password</CardTitle>
           <CardDescription>
             {isSubmitted 
               ? "We've sent you a reset link" 
@@ -49,17 +54,22 @@ const ForgotPassword = () => {
           {!isSubmitted ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-primary/80">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="border-primary/20 focus:border-primary focus:ring-primary/20"
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full bg-primary hover:bg-primary/90 transition-all duration-200 hover:scale-105" 
+                disabled={isLoading}
+              >
                 {isLoading ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </form>
@@ -74,7 +84,7 @@ const ForgotPassword = () => {
               <Button 
                 variant="outline" 
                 onClick={() => setIsSubmitted(false)}
-                className="w-full"
+                className="w-full border-primary/20 text-primary hover:bg-primary/10 transition-all duration-200 hover:scale-105"
               >
                 Send Another Link
               </Button>
@@ -84,7 +94,7 @@ const ForgotPassword = () => {
           <div className="mt-6 text-center">
             <Link 
               to="/login" 
-              className="inline-flex items-center text-sm text-blue-600 hover:underline"
+              className="inline-flex items-center text-sm text-primary hover:text-primary/80 hover:underline transition-colors"
             >
               <ArrowLeft className="mr-1 h-4 w-4" />
               Back to Sign In
