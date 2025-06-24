@@ -1,11 +1,11 @@
 
 import * as React from "react";
-import { Input, InputProps } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { AlertCircle, CheckCircle } from "lucide-react";
 
-interface InputWithValidationProps extends Omit<InputProps, 'id'> {
+interface InputWithValidationProps extends React.ComponentProps<"input"> {
   label: string;
   id: string;
   error?: string;

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
@@ -29,13 +29,13 @@ export const useFeedbackToast = () => {
     };
 
     toast({
-      title: (
+      title: title,
+      description: (
         <div className="flex items-center gap-2">
           {icons[type]}
-          <span>{title}</span>
+          <span>{description}</span>
         </div>
       ),
-      description,
       duration,
       className: `${colors[type]} border-l-4`,
     });
