@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import AnimatedBreadcrumb from '@/components/ui/animated-breadcrumb';
 import { useToast } from '@/hooks/use-toast';
 import { 
   User, 
@@ -30,6 +30,11 @@ const Profile = () => {
     customDictionary: user?.preferences?.customDictionary || []
   });
   const [newWord, setNewWord] = useState('');
+
+  const breadcrumbItems = [
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Profile & Settings' }
+  ];
 
   const handleSave = () => {
     updateProfile({
@@ -66,34 +71,36 @@ const Profile = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
+      <AnimatedBreadcrumb items={breadcrumbItems} />
+      
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Profile & Settings</h1>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Profile & Settings</h1>
         <p className="text-gray-600 mt-1">
           Manage your account information and preferences
         </p>
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="profile" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-3 bg-primary/5 border border-primary/20">
+          <TabsTrigger value="profile" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <User className="h-4 w-4" />
             Profile
           </TabsTrigger>
-          <TabsTrigger value="preferences" className="flex items-center gap-2">
+          <TabsTrigger value="preferences" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <Settings className="h-4 w-4" />
             Preferences
           </TabsTrigger>
-          <TabsTrigger value="dictionary" className="flex items-center gap-2">
+          <TabsTrigger value="dictionary" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <BookOpen className="h-4 w-4" />
             Dictionary
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-6">
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
+              <CardTitle className="text-primary">Personal Information</CardTitle>
               <CardDescription>
                 Update your personal details and account information
               </CardDescription>
@@ -107,6 +114,7 @@ const Profile = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     disabled={!isEditing}
+                    className="border-primary/20 focus:border-primary"
                   />
                 </div>
                 <div className="space-y-2">
@@ -117,18 +125,19 @@ const Profile = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     disabled={!isEditing}
+                    className="border-primary/20 focus:border-primary"
                   />
                 </div>
               </div>
               
               <div className="flex gap-2">
                 {!isEditing ? (
-                  <Button onClick={() => setIsEditing(true)}>
+                  <Button onClick={() => setIsEditing(true)} className="bg-primary hover:bg-primary/90">
                     Edit Profile
                   </Button>
                 ) : (
                   <>
-                    <Button onClick={handleSave} className="flex items-center gap-2">
+                    <Button onClick={handleSave} className="flex items-center gap-2 bg-primary hover:bg-primary/90">
                       <Save className="h-4 w-4" />
                       Save Changes
                     </Button>
@@ -143,6 +152,7 @@ const Profile = () => {
                           customDictionary: user?.preferences?.customDictionary || []
                         });
                       }}
+                      className="border-primary/20 text-primary hover:bg-primary/10"
                     >
                       Cancel
                     </Button>
@@ -152,15 +162,15 @@ const Profile = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Account Statistics</CardTitle>
+              <CardTitle className="text-primary">Account Statistics</CardTitle>
               <CardDescription>Overview of your account activity</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">47</div>
+                  <div className="text-2xl font-bold text-primary">47</div>
                   <div className="text-sm text-gray-600">Total Sessions</div>
                 </div>
                 <div className="text-center">
@@ -168,7 +178,7 @@ const Profile = () => {
                   <div className="text-sm text-gray-600">Practice Time</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">87%</div>
+                  <div className="text-2xl font-bold text-secondary">87%</div>
                   <div className="text-sm text-gray-600">Avg Accuracy</div>
                 </div>
               </div>
@@ -177,9 +187,9 @@ const Profile = () => {
         </TabsContent>
 
         <TabsContent value="preferences" className="space-y-6">
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Transcription Settings</CardTitle>
+              <CardTitle className="text-primary">Transcription Settings</CardTitle>
               <CardDescription>
                 Customize how your transcriptions are displayed and formatted
               </CardDescription>
@@ -191,7 +201,7 @@ const Profile = () => {
                   value={formData.transcriptionFormat}
                   onValueChange={(value) => setFormData({ ...formData, transcriptionFormat: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="border-primary/20 focus:border-primary">
                     <SelectValue placeholder="Select format" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
@@ -207,21 +217,21 @@ const Profile = () => {
                 <Label>Display Options</Label>
                 <div className="space-y-2">
                   <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="rounded" defaultChecked />
+                    <input type="checkbox" className="rounded border-primary/20 text-primary focus:ring-primary/20" defaultChecked />
                     <span className="text-sm">Show confidence scores</span>
                   </label>
                   <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="rounded" defaultChecked />
+                    <input type="checkbox" className="rounded border-primary/20 text-primary focus:ring-primary/20" defaultChecked />
                     <span className="text-sm">Highlight uncertain words</span>
                   </label>
                   <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="rounded" />
+                    <input type="checkbox" className="rounded border-primary/20 text-primary focus:ring-primary/20" />
                     <span className="text-sm">Auto-scroll during transcription</span>
                   </label>
                 </div>
               </div>
 
-              <Button onClick={handleSave} className="flex items-center gap-2">
+              <Button onClick={handleSave} className="flex items-center gap-2 bg-primary hover:bg-primary/90">
                 <Save className="h-4 w-4" />
                 Save Preferences
               </Button>
@@ -230,9 +240,9 @@ const Profile = () => {
         </TabsContent>
 
         <TabsContent value="dictionary" className="space-y-6">
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Custom Dictionary</CardTitle>
+              <CardTitle className="text-primary">Custom Dictionary</CardTitle>
               <CardDescription>
                 Add words specific to your vocabulary to improve recognition accuracy
               </CardDescription>
@@ -244,8 +254,9 @@ const Profile = () => {
                   value={newWord}
                   onChange={(e) => setNewWord(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addCustomWord()}
+                  className="border-primary/20 focus:border-primary"
                 />
-                <Button onClick={addCustomWord} className="flex items-center gap-2">
+                <Button onClick={addCustomWord} className="flex items-center gap-2 bg-primary hover:bg-primary/90">
                   <Plus className="h-4 w-4" />
                   Add
                 </Button>
@@ -253,7 +264,7 @@ const Profile = () => {
               
               <div className="space-y-2">
                 <Label>Your Custom Words ({formData.customDictionary.length})</Label>
-                <div className="min-h-32 max-h-64 overflow-y-auto border rounded-lg p-4">
+                <div className="min-h-32 max-h-64 overflow-y-auto border border-primary/20 rounded-lg p-4">
                   {formData.customDictionary.length === 0 ? (
                     <p className="text-gray-500 text-center py-8">
                       No custom words added yet. Add words that are specific to your vocabulary.
@@ -261,11 +272,11 @@ const Profile = () => {
                   ) : (
                     <div className="flex flex-wrap gap-2">
                       {formData.customDictionary.map((word, index) => (
-                        <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                        <Badge key={index} variant="secondary" className="flex items-center gap-1 bg-primary/10 text-primary border-primary/20">
                           {word}
                           <button
                             onClick={() => removeCustomWord(word)}
-                            className="ml-1 hover:bg-gray-300 rounded-full p-1"
+                            className="ml-1 hover:bg-primary/20 rounded-full p-1 transition-colors"
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -276,9 +287,9 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-medium text-blue-900 mb-2">Tips for Custom Dictionary:</h4>
-                <ul className="text-sm text-blue-800 space-y-1">
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <h4 className="font-medium text-primary mb-2">Tips for Custom Dictionary:</h4>
+                <ul className="text-sm text-gray-700 space-y-1">
                   <li>• Add names, technical terms, and specialized vocabulary</li>
                   <li>• Include common phrases you use frequently</li>
                   <li>• Words are case-insensitive</li>

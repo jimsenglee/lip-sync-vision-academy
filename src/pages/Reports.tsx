@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AnimatedBreadcrumb from '@/components/ui/animated-breadcrumb';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -16,6 +16,11 @@ import {
 } from 'lucide-react';
 
 const Reports = () => {
+  const breadcrumbItems = [
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Performance Reports' }
+  ];
+
   const performanceMetrics = [
     {
       name: 'Word Error Rate (WER)',
@@ -118,25 +123,27 @@ const Reports = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
+      <AnimatedBreadcrumb items={breadcrumbItems} />
+      
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Performance Reports</h1>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Performance Reports</h1>
         <p className="text-gray-600 mt-1">
           Track your progress and identify areas for improvement
         </p>
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-3 bg-primary/5 border border-primary/20">
+          <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <BarChart3 className="h-4 w-4" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="history" className="flex items-center gap-2">
+          <TabsTrigger value="history" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <Calendar className="h-4 w-4" />
             Session History
           </TabsTrigger>
-          <TabsTrigger value="suggestions" className="flex items-center gap-2">
+          <TabsTrigger value="suggestions" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <Target className="h-4 w-4" />
             Suggestions
           </TabsTrigger>
@@ -146,9 +153,9 @@ const Reports = () => {
           {/* Performance Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {performanceMetrics.map((metric, index) => (
-              <Card key={index}>
+              <Card key={index} className="border-primary/20 hover:shadow-lg transition-all duration-300">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">{metric.name}</CardTitle>
+                  <CardTitle className="text-lg text-primary">{metric.name}</CardTitle>
                   <CardDescription className="text-sm">{metric.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -160,7 +167,7 @@ const Reports = () => {
                     </div>
                   </div>
                   <div className="mt-2">
-                    <Badge variant="outline" className="text-green-700 bg-green-50">
+                    <Badge variant="outline" className="text-green-700 bg-green-50 border-green-200">
                       Improving
                     </Badge>
                   </div>
@@ -171,9 +178,9 @@ const Reports = () => {
 
           {/* Progress Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
+            <Card className="border-primary/20">
               <CardHeader>
-                <CardTitle>Weekly Progress</CardTitle>
+                <CardTitle className="text-primary">Weekly Progress</CardTitle>
                 <CardDescription>Accuracy trends over the past week</CardDescription>
               </CardHeader>
               <CardContent>
@@ -217,9 +224,9 @@ const Reports = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-primary/20">
               <CardHeader>
-                <CardTitle>Learning Milestones</CardTitle>
+                <CardTitle className="text-primary">Learning Milestones</CardTitle>
                 <CardDescription>Your achievements and progress markers</CardDescription>
               </CardHeader>
               <CardContent>
@@ -246,7 +253,7 @@ const Reports = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Clock className="h-5 w-5 text-blue-500" />
+                    <Clock className="h-5 w-5 text-primary" />
                     <div>
                       <div className="font-medium">Practice Warrior</div>
                       <div className="text-sm text-gray-600">10+ hours of total practice time</div>
@@ -259,19 +266,19 @@ const Reports = () => {
         </TabsContent>
 
         <TabsContent value="history" className="space-y-6">
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Session History</CardTitle>
+              <CardTitle className="text-primary">Session History</CardTitle>
               <CardDescription>Detailed records of your transcription sessions</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {sessionHistory.map((session, index) => (
-                  <div key={index} className="border rounded-lg p-4">
+                  <div key={index} className="border border-primary/10 rounded-lg p-4 hover:bg-primary/5 transition-colors">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-4">
                         <div className="font-medium">{session.date}</div>
-                        <Badge variant="outline">{session.type}</Badge>
+                        <Badge variant="outline" className="border-primary/20">{session.type}</Badge>
                         <div className="text-sm text-gray-600">{session.duration}</div>
                       </div>
                       <div className={`text-lg font-bold ${getAccuracyColor(session.accuracy)}`}>
@@ -290,7 +297,7 @@ const Reports = () => {
                         <ul className="text-sm space-y-1">
                           {session.improvements.map((improvement, idx) => (
                             <li key={idx} className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
                               {improvement}
                             </li>
                           ))}
@@ -305,9 +312,9 @@ const Reports = () => {
         </TabsContent>
 
         <TabsContent value="suggestions" className="space-y-6">
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Personalized Suggestions</CardTitle>
+              <CardTitle className="text-primary">Personalized Suggestions</CardTitle>
               <CardDescription>
                 Based on your performance data, here are recommendations to improve
               </CardDescription>
@@ -315,12 +322,12 @@ const Reports = () => {
             <CardContent>
               <div className="space-y-4">
                 {suggestions.map((suggestion, index) => (
-                  <div key={index} className="border rounded-lg p-4">
+                  <div key={index} className="border border-primary/10 rounded-lg p-4 hover:bg-primary/5 transition-colors">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-3">
-                        <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
+                        <AlertCircle className="h-5 w-5 text-primary mt-0.5" />
                         <div>
-                          <div className="font-medium">{suggestion.title}</div>
+                          <div className="font-medium text-primary">{suggestion.title}</div>
                           <div className="text-sm text-gray-600">{suggestion.category}</div>
                         </div>
                       </div>
@@ -335,9 +342,9 @@ const Reports = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Performance Goals</CardTitle>
+              <CardTitle className="text-primary">Performance Goals</CardTitle>
               <CardDescription>Track your progress towards accuracy targets</CardDescription>
             </CardHeader>
             <CardContent>

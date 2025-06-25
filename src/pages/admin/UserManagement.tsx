@@ -1,18 +1,15 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import BreadcrumbNav from '@/components/ui/breadcrumb-nav';
-import { useFeedbackToast } from '@/components/ui/feedback-toast';
-import CrudModal from '@/components/ui/crud-modal';
+import AnimatedBreadcrumb from '@/components/ui/animated-breadcrumb';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Users, 
   Search, 
   Filter,
-  MoreHorizontal,
   Edit,
   Trash2,
   Eye,
@@ -24,7 +21,12 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const toast = useFeedbackToast();
+  const { toast } = useToast();
+
+  const breadcrumbItems = [
+    { title: 'Admin Dashboard', href: '/admin' },
+    { title: 'User Management' }
+  ];
 
   const users = [
     {
@@ -141,25 +143,26 @@ const UserManagement = () => {
   };
 
   const handleSaveUser = () => {
-    toast.success("User updated successfully", "User information has been saved.");
+    toast({
+      title: "Success",
+      description: "User updated successfully",
+    });
     setIsEditModalOpen(false);
     setSelectedUser(null);
   };
 
   const handleConfirmDelete = () => {
-    toast.success("User deleted", "The user has been removed from the system.");
+    toast({
+      title: "Success",
+      description: "User deleted successfully",
+    });
     setIsDeleteModalOpen(false);
     setSelectedUser(null);
   };
 
-  const breadcrumbItems = [
-    { title: 'Admin', href: '/admin' },
-    { title: 'User Management' }
-  ];
-
   return (
     <div className="space-y-6 animate-fade-in">
-      <BreadcrumbNav items={breadcrumbItems} />
+      <AnimatedBreadcrumb items={breadcrumbItems} />
       
       <div className="flex items-center justify-between">
         <div>
@@ -339,50 +342,6 @@ const UserManagement = () => {
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Edit User Modal */}
-      <CrudModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        title="Edit User"
-        description="Update user information and permissions"
-        onSave={handleSaveUser}
-        saveLabel="Save Changes"
-      >
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-primary">Name</label>
-            <Input defaultValue={selectedUser?.name} className="border-primary/20 focus:border-primary" />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-primary">Email</label>
-            <Input defaultValue={selectedUser?.email} className="border-primary/20 focus:border-primary" />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-primary">Role</label>
-            <select className="w-full p-2 border border-primary/20 rounded-md focus:border-primary focus:ring-primary/20">
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-        </div>
-      </CrudModal>
-
-      {/* Delete Confirmation Modal */}
-      <CrudModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete User"
-        description={`Are you sure you want to delete ${selectedUser?.name}? This action cannot be undone.`}
-        onDelete={handleConfirmDelete}
-        deleteLabel="Delete User"
-      >
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-700">
-            This will permanently remove the user and all associated data from the system.
-          </p>
-        </div>
-      </CrudModal>
     </div>
   );
 };

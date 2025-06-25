@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AnimatedBreadcrumb from '@/components/ui/animated-breadcrumb';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -16,6 +16,11 @@ import {
 } from 'lucide-react';
 
 const SystemAnalytics = () => {
+  const breadcrumbItems = [
+    { title: 'Admin Dashboard', href: '/admin' },
+    { title: 'System Analytics' }
+  ];
+
   const globalMetrics = [
     {
       name: 'Word Error Rate (WER)',
@@ -119,25 +124,27 @@ const SystemAnalytics = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
+      <AnimatedBreadcrumb items={breadcrumbItems} />
+      
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">System Analytics</h1>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">System Analytics</h1>
         <p className="text-gray-600 mt-1">
           Global performance metrics and user engagement insights
         </p>
       </div>
 
       <Tabs defaultValue="performance" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="performance" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-3 bg-primary/5 border border-primary/20">
+          <TabsTrigger value="performance" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <BarChart3 className="h-4 w-4" />
             Performance
           </TabsTrigger>
-          <TabsTrigger value="engagement" className="flex items-center gap-2">
+          <TabsTrigger value="engagement" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <Users className="h-4 w-4" />
             User Engagement
           </TabsTrigger>
-          <TabsTrigger value="feedback" className="flex items-center gap-2">
+          <TabsTrigger value="feedback" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <MessageSquare className="h-4 w-4" />
             Feedback Analysis
           </TabsTrigger>
@@ -147,9 +154,9 @@ const SystemAnalytics = () => {
           {/* Global Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {globalMetrics.map((metric, index) => (
-              <Card key={index}>
+              <Card key={index} className="border-primary/20 hover:shadow-lg transition-all duration-300">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-gray-600">{metric.name}</CardTitle>
+                  <CardTitle className="text-sm font-medium text-primary">{metric.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
@@ -170,9 +177,9 @@ const SystemAnalytics = () => {
           </div>
 
           {/* Detailed Performance Breakdown */}
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Recognition Performance by Category</CardTitle>
+              <CardTitle className="text-primary">Recognition Performance by Category</CardTitle>
               <CardDescription>Accuracy metrics across different recognition areas</CardDescription>
             </CardHeader>
             <CardContent>
@@ -182,7 +189,7 @@ const SystemAnalytics = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <span className="font-medium">{area.area}</span>
-                        <Badge variant="outline">{area.volume} samples</Badge>
+                        <Badge variant="outline" className="border-primary/20">{area.volume} samples</Badge>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className={`text-lg font-bold ${getAccuracyColor(area.accuracy)}`}>
@@ -200,9 +207,9 @@ const SystemAnalytics = () => {
 
           {/* System Health */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
+            <Card className="border-primary/20">
               <CardHeader>
-                <CardTitle>System Health</CardTitle>
+                <CardTitle className="text-primary">System Health</CardTitle>
                 <CardDescription>Current system performance indicators</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -225,9 +232,9 @@ const SystemAnalytics = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-primary/20">
               <CardHeader>
-                <CardTitle>Model Performance</CardTitle>
+                <CardTitle className="text-primary">Model Performance</CardTitle>
                 <CardDescription>AI model metrics and improvements</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -256,10 +263,10 @@ const SystemAnalytics = () => {
           {/* Engagement Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {userEngagement.map((metric, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+              <Card key={index} className="hover:shadow-lg transition-shadow border-primary/20">
                 <CardContent className="p-6">
                   <div className="space-y-2">
-                    <p className="text-sm font-medium text-gray-600">{metric.metric}</p>
+                    <p className="text-sm font-medium text-primary">{metric.metric}</p>
                     <p className="text-3xl font-bold text-gray-900">{metric.value}</p>
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-green-600 font-medium">{metric.change}</span>
@@ -273,9 +280,9 @@ const SystemAnalytics = () => {
 
           {/* Usage Patterns */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
+            <Card className="border-primary/20">
               <CardHeader>
-                <CardTitle>Feature Usage</CardTitle>
+                <CardTitle className="text-primary">Feature Usage</CardTitle>
                 <CardDescription>Most popular features by usage volume</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -319,9 +326,9 @@ const SystemAnalytics = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-primary/20">
               <CardHeader>
-                <CardTitle>User Retention</CardTitle>
+                <CardTitle className="text-primary">User Retention</CardTitle>
                 <CardDescription>User activity and retention metrics</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -355,9 +362,9 @@ const SystemAnalytics = () => {
         <TabsContent value="feedback" className="space-y-6">
           {/* Feedback Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
+            <Card className="border-primary/20">
               <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-blue-600">4.6</div>
+                <div className="text-2xl font-bold text-primary">4.6</div>
                 <div className="text-sm text-gray-600">Average Rating</div>
                 <div className="flex justify-center mt-2">
                   {[1,2,3,4,5].map((star) => (
@@ -366,21 +373,21 @@ const SystemAnalytics = () => {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-primary/20">
               <CardContent className="p-6 text-center">
                 <div className="text-2xl font-bold text-green-600">238</div>
                 <div className="text-sm text-gray-600">Total Feedback</div>
                 <div className="text-xs text-gray-500 mt-1">This month</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-primary/20">
               <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-purple-600">87%</div>
+                <div className="text-2xl font-bold text-primary">87%</div>
                 <div className="text-sm text-gray-600">Satisfaction Rate</div>
                 <div className="text-xs text-green-600 mt-1">+3% from last month</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-primary/20">
               <CardContent className="p-6 text-center">
                 <div className="text-2xl font-bold text-orange-600">35</div>
                 <div className="text-sm text-gray-600">Active Issues</div>
@@ -390,22 +397,22 @@ const SystemAnalytics = () => {
           </div>
 
           {/* Feedback Categories */}
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Feedback Analysis</CardTitle>
+              <CardTitle className="text-primary">Feedback Analysis</CardTitle>
               <CardDescription>Categorized user feedback and issue tracking</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {feedbackData.map((category, index) => (
-                  <div key={index} className="border rounded-lg p-4">
+                  <div key={index} className="border border-primary/10 rounded-lg p-4 hover:bg-primary/5 transition-colors">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                          <MessageSquare className="h-4 w-4 text-blue-600" />
+                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                          <MessageSquare className="h-4 w-4 text-primary" />
                         </div>
                         <div>
-                          <h3 className="font-medium">{category.category}</h3>
+                          <h3 className="font-medium text-primary">{category.category}</h3>
                           <p className="text-sm text-gray-600">{category.description}</p>
                         </div>
                       </div>
@@ -413,7 +420,7 @@ const SystemAnalytics = () => {
                         <Badge className={getSeverityColor(category.severity)}>
                           {category.severity}
                         </Badge>
-                        <span className="text-lg font-bold">{category.count}</span>
+                        <span className="text-lg font-bold text-primary">{category.count}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
@@ -428,31 +435,31 @@ const SystemAnalytics = () => {
           </Card>
 
           {/* Action Items */}
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
-              <CardTitle>Recommended Actions</CardTitle>
+              <CardTitle className="text-primary">Recommended Actions</CardTitle>
               <CardDescription>Priority actions based on feedback analysis</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                <div className="flex items-start gap-3 p-3 border border-primary/10 rounded-lg hover:bg-primary/5 transition-colors">
                   <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
                   <div>
-                    <div className="font-medium">Address Accuracy Issues</div>
+                    <div className="font-medium text-primary">Address Accuracy Issues</div>
                     <div className="text-sm text-gray-600">23 users reported transcription accuracy problems - investigate model performance</div>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                <div className="flex items-start gap-3 p-3 border border-primary/10 rounded-lg hover:bg-primary/5 transition-colors">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
                   <div>
-                    <div className="font-medium">Continue UI Improvements</div>
+                    <div className="font-medium text-primary">Continue UI Improvements</div>
                     <div className="text-sm text-gray-600">47 interface suggestions - prioritize most requested features</div>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 p-3 border rounded-lg">
-                  <Activity className="h-5 w-5 text-blue-500 mt-0.5" />
+                <div className="flex items-start gap-3 p-3 border border-primary/10 rounded-lg hover:bg-primary/5 transition-colors">
+                  <Activity className="h-5 w-5 text-primary mt-0.5" />
                   <div>
-                    <div className="font-medium">Review Feature Requests</div>
+                    <div className="font-medium text-primary">Review Feature Requests</div>
                     <div className="text-sm text-gray-600">156 new feature ideas - evaluate feasibility and user impact</div>
                   </div>
                 </div>
