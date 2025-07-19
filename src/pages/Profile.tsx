@@ -9,20 +9,33 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import AnimatedBreadcrumb from '@/components/ui/animated-breadcrumb';
-import { useToast } from '@/hooks/use-toast';
+import { useFeedbackToast } from '@/components/ui/feedback-toast';
+import SecuritySettings from '@/components/security/SecuritySettings';
+import AccessibilitySettings from '@/components/accessibility/AccessibilitySettings';
+import ProfileImageUpload from '@/components/auth/ProfileImageUpload';
 import { 
   User, 
   Settings, 
   BookOpen,
   Save,
   Plus,
-  X
+  X,
+  Shield,
+  Eye,
+  Key
 } from 'lucide-react';
 
 const Profile = () => {
   const { user, updateProfile } = useAuth();
-  const { toast } = useToast();
+  const feedbackToast = useFeedbackToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  });
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -36,7 +49,22 @@ const Profile = () => {
     { title: 'Profile & Settings' }
   ];
 
+  // Profile update handler
   const handleSave = () => {
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      feedbackToast.error("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
+
+    // Check if email already exists (mock check)
+    const emailExists = false; // This would be a real API call
+    if (emailExists) {
+      feedbackToast.error("Email In Use", "This email address is already in use by another account.");
+      return;
+    }
+
     updateProfile({
       ...user,
       name: formData.name,
@@ -47,10 +75,52 @@ const Profile = () => {
       }
     });
     setIsEditing(false);
-    toast({
-      title: "Profile updated",
-      description: "Your changes have been saved successfully.",
-    });
+    feedbackToast.success("Profile Updated", "Your changes have been saved successfully.");
+  };
+
+  // Password change handler
+  const handlePasswordChange = () => {
+    // Validation checks
+    if (!passwordData.currentPassword) {
+      feedbackToast.error("Current Password Required", "Current password cannot be empty.");
+      return;
+    }
+
+    if (!passwordData.newPassword) {
+      feedbackToast.error("New Password Required", "New password cannot be empty.");
+      return;
+    }
+
+    // Password complexity check
+    if (passwordData.newPassword.length < 8 || !/(?=.*[a-zA-Z])(?=.*\d)/.test(passwordData.newPassword)) {
+      feedbackToast.error(
+        "Weak Password", 
+        "Password must be at least 8 characters and include both letters and numbers."
+      );
+      return;
+    }
+
+    if (!passwordData.confirmNewPassword) {
+      feedbackToast.error("Confirmation Required", "Please confirm your new password.");
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmNewPassword) {
+      feedbackToast.error("Passwords Don't Match", "New passwords do not match.");
+      return;
+    }
+
+    // Mock current password verification
+    const currentPasswordCorrect = true; // This would be a real API call
+    if (!currentPasswordCorrect) {
+      feedbackToast.error("Incorrect Password", "The current password you entered is incorrect.");
+      return;
+    }
+
+    // Success
+    setPasswordData({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+    setIsChangingPassword(false);
+    feedbackToast.success("Password Updated", "Your password has been changed successfully.");
   };
 
   const addCustomWord = () => {
@@ -82,10 +152,14 @@ const Profile = () => {
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-primary/5 border border-primary/20">
+        <TabsList className="grid w-full grid-cols-6 bg-primary/5 border border-primary/20">
           <TabsTrigger value="profile" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <User className="h-4 w-4" />
             Profile
+          </TabsTrigger>
+          <TabsTrigger value="password" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
+            <Key className="h-4 w-4" />
+            Password
           </TabsTrigger>
           <TabsTrigger value="preferences" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <Settings className="h-4 w-4" />
@@ -94,6 +168,14 @@ const Profile = () => {
           <TabsTrigger value="dictionary" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <BookOpen className="h-4 w-4" />
             Dictionary
+          </TabsTrigger>
+          <TabsTrigger value="security" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
+            <Shield className="h-4 w-4" />
+            Security
+          </TabsTrigger>
+          <TabsTrigger value="accessibility" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
+            <Eye className="h-4 w-4" />
+            Accessibility
           </TabsTrigger>
         </TabsList>
 
@@ -105,7 +187,16 @@ const Profile = () => {
                 Update your personal details and account information
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
+              {/* Profile Image */}
+              <div className="flex flex-col items-center space-y-4">
+                <ProfileImageUpload 
+                  onImageSelect={setProfileImage}
+                  currentImage={(user as any)?.profileImage}
+                  isEditing={isEditing}
+                />
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
@@ -182,6 +273,84 @@ const Profile = () => {
                   <div className="text-sm text-gray-600">Avg Accuracy</div>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="password" className="space-y-6">
+          <Card className="border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-primary">Change Password</CardTitle>
+              <CardDescription>
+                Update your account password for enhanced security
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {!isChangingPassword ? (
+                <Button 
+                  onClick={() => setIsChangingPassword(true)}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  Change Password
+                </Button>
+              ) : (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="currentPassword">Current Password</Label>
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      placeholder="Enter current password"
+                      value={passwordData.currentPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                      className="border-primary/20 focus:border-primary"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      placeholder="Enter new password"
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                      className="border-primary/20 focus:border-primary"
+                    />
+                    <div className="text-xs text-gray-500">
+                      Must be at least 8 characters with letters and numbers
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmNewPassword">Confirm New Password</Label>
+                    <Input
+                      id="confirmNewPassword"
+                      type="password"
+                      placeholder="Confirm new password"
+                      value={passwordData.confirmNewPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, confirmNewPassword: e.target.value })}
+                      className="border-primary/20 focus:border-primary"
+                    />
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button onClick={handlePasswordChange} className="bg-primary hover:bg-primary/90">
+                      Update Password
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setIsChangingPassword(false);
+                        setPasswordData({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+                      }}
+                      className="border-primary/20 text-primary hover:bg-primary/10"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -298,6 +467,14 @@ const Profile = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="security" className="space-y-6">
+          <SecuritySettings />
+        </TabsContent>
+
+        <TabsContent value="accessibility" className="space-y-6">
+          <AccessibilitySettings />
         </TabsContent>
       </Tabs>
     </div>
