@@ -19,6 +19,7 @@ import Education from "./pages/Education";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 import TranscriptionHistory from "./pages/TranscriptionHistory";
+import TranscriptionResult from "./pages/TranscriptionResult";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import ContentManagement from "./pages/admin/ContentManagement";
@@ -75,6 +76,13 @@ const App = () => (
               <ProtectedRoute>
                 <DashboardLayout>
                   <TranscriptionHistory />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/transcription-result/:id" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <TranscriptionResult />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
