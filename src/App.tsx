@@ -16,6 +16,12 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Transcription from "./pages/Transcription";
 import Education from "./pages/Education";
+import TutorialLibrary from "./pages/education/TutorialLibrary";
+import TutorialPlayer from "./pages/education/TutorialPlayer";
+import InteractiveQuizzes from "./pages/education/InteractiveQuizzes";
+import RealTimePractice from "./pages/education/RealTimePractice";
+import ProgressTracking from "./pages/education/ProgressTracking";
+import NotificationSettings from "./pages/education/NotificationSettings";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 import TranscriptionHistory from "./pages/TranscriptionHistory";
@@ -62,6 +68,48 @@ const App = () => (
               <ProtectedRoute>
                 <DashboardLayout>
                   <Education />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/education/tutorials" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <TutorialLibrary />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/education/tutorial/:id" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <TutorialPlayer />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/education/quizzes" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <InteractiveQuizzes />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/education/practice" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <RealTimePractice />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/education/progress" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <ProgressTracking />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/education/notifications" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <NotificationSettings />
                 </DashboardLayout>
               </ProtectedRoute>
             } />

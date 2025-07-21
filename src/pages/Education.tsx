@@ -15,13 +15,19 @@ import {
   FileText,
   Camera,
   Filter,
-  Star
+  Star,
+  Brain,
+  Target,
+  BarChart3,
+  Settings
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import AnimatedBreadcrumb from '@/components/ui/animated-breadcrumb';
 import VideoCard from '@/components/education/VideoCard';
 
 const Education = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -139,18 +145,30 @@ const Education = () => {
       </motion.div>
 
       <Tabs defaultValue="courses" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-primary/10">
+        <TabsList className="grid w-full grid-cols-6 bg-primary/10">
           <TabsTrigger value="courses" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <BookOpen className="h-4 w-4" />
-            Courses
+            Tutorials
+          </TabsTrigger>
+          <TabsTrigger value="quizzes" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
+            <Brain className="h-4 w-4" />
+            Quizzes
           </TabsTrigger>
           <TabsTrigger value="practice" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <Camera className="h-4 w-4" />
-            Live Practice
+            Practice
           </TabsTrigger>
           <TabsTrigger value="progress" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
-            <Award className="h-4 w-4" />
-            My Progress
+            <BarChart3 className="h-4 w-4" />
+            Progress
+          </TabsTrigger>
+          <TabsTrigger value="library" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
+            <Video className="h-4 w-4" />
+            Library
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
+            <Settings className="h-4 w-4" />
+            Settings
           </TabsTrigger>
         </TabsList>
 
@@ -225,175 +243,223 @@ const Education = () => {
           )}
         </TabsContent>
 
-        <TabsContent value="practice" className="space-y-6">
-          {/* Real-time Practice Mode */}
-          <Card className="border-primary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-primary">
-                <Camera className="h-5 w-5" />
-                Live Lip-Reading Practice
-              </CardTitle>
-              <CardDescription>
-                Practice your pronunciation with real-time webcam feedback and AI-powered analysis
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Webcam Preview */}
-                <div className="space-y-4">
-                  <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl border-2 border-dashed border-primary/30 flex items-center justify-center">
-                    <div className="text-center space-y-4">
-                      <Camera className="h-16 w-16 mx-auto text-primary/60" />
-                      <div>
-                        <p className="text-lg font-medium text-primary">Your Camera Feed</p>
-                        <p className="text-sm text-gray-500">Click "Start Practice" to begin</p>
-                      </div>
-                    </div>
-                  </div>
-                  <Button className="w-full bg-primary hover:bg-primary/90" size="lg">
-                    <Camera className="mr-2 h-4 w-4" />
-                    Start Practice Session
-                  </Button>
-                </div>
-
-                {/* Practice Controls & Feedback */}
-                <div className="space-y-4">
-                  <Card className="border-primary/20">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Current Exercise</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center space-y-4">
-                        <div className="text-4xl font-bold text-primary mb-2">Hello</div>
-                        <p className="text-gray-600">Practice saying this word clearly</p>
-                        
-                        {/* Live Feedback Indicators */}
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">Lip Position</span>
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                              <span className="text-sm text-green-600">Good</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">Mouth Opening</span>
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                              <span className="text-sm text-yellow-600">Adjust</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">Clarity</span>
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                              <span className="text-sm text-green-600">Excellent</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-primary/20">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Session Stats</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span>Accuracy</span>
-                          <span className="font-medium text-primary">87%</span>
-                        </div>
-                        <Progress value={87} className="h-2" />
-                        
-                        <div className="grid grid-cols-2 gap-4 pt-2">
-                          <div className="text-center">
-                            <div className="text-2xl font-bold text-green-600">23</div>
-                            <div className="text-xs text-gray-600">Correct</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-2xl font-bold text-orange-600">4</div>
-                            <div className="text-xs text-gray-600">To Practice</div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="quizzes" className="space-y-6">
+          {/* Interactive Quizzes Overview */}
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-primary">Interactive Quizzes</h2>
+            <p className="text-gray-600">Test your lip-reading skills with video-based quizzes</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer"
+                  onClick={() => navigate('/education/quizzes')}>
+              <CardContent className="p-6 text-center">
+                <Brain className="h-12 w-12 text-primary mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Take Quiz</h3>
+                <p className="text-gray-600 mb-4">Challenge yourself with interactive video quizzes</p>
+                <Button className="w-full bg-primary hover:bg-primary/90">
+                  Start Quiz
+                </Button>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-primary/20">
+              <CardContent className="p-6 text-center">
+                <Target className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Quiz Results</h3>
+                <p className="text-gray-600 mb-4">View your quiz history and performance</p>
+                <div className="text-2xl font-bold text-green-600 mb-2">87%</div>
+                <p className="text-sm text-gray-500">Average Score</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-primary/20">
+              <CardContent className="p-6 text-center">
+                <Award className="h-12 w-12 text-yellow-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Achievements</h3>
+                <p className="text-gray-600 mb-4">Unlock badges and milestones</p>
+                <div className="text-2xl font-bold text-yellow-600 mb-2">5</div>
+                <p className="text-sm text-gray-500">Badges Earned</p>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="progress" className="space-y-6">
-          {/* Progress Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border-primary/20">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Award className="h-5 w-5 text-primary" />
-                  Overall Progress
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span>Completion</span>
-                    <span className="font-medium">54%</span>
-                  </div>
-                  <Progress value={54} className="h-3" />
-                  <div className="grid grid-cols-2 gap-4 text-center pt-2">
-                    <div>
-                      <div className="text-2xl font-bold text-green-600">2</div>
-                      <div className="text-xs text-gray-600">Completed</div>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-blue-600">4</div>
-                      <div className="text-xs text-gray-600">In Progress</div>
-                    </div>
-                  </div>
+        <TabsContent value="practice" className="space-y-6">
+          {/* Real-time Practice Mode Overview */}
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-primary">Real-Time Practice Mode</h2>
+            <p className="text-gray-600">Practice lip formation with live webcam feedback</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer"
+                  onClick={() => navigate('/education/practice')}>
+              <CardContent className="p-6">
+                <div className="text-center space-y-4">
+                  <Camera className="h-16 w-16 mx-auto text-primary" />
+                  <h3 className="text-xl font-semibold">Start Practice</h3>
+                  <p className="text-gray-600">Begin real-time lip reading practice with webcam</p>
+                  <Button className="w-full bg-primary hover:bg-primary/90">
+                    Launch Practice Mode
+                  </Button>
                 </div>
               </CardContent>
             </Card>
-
+            
             <Card className="border-primary/20">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Achievements</CardTitle>
-              </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-4">Practice Categories</h3>
                 <div className="space-y-3">
-                  {[
-                    { name: 'First Lesson', icon: '🎯', color: 'text-green-600' },
-                    { name: 'Vowel Master', icon: '🏆', color: 'text-yellow-600' },
-                    { name: 'Practice Streak', icon: '🔥', color: 'text-orange-600' }
-                  ].map((achievement, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <div className="text-2xl">{achievement.icon}</div>
-                      <div>
-                        <div className="font-medium">{achievement.name}</div>
-                        <div className="text-xs text-gray-500">Earned today</div>
-                      </div>
+                  {['Basic Words', 'Greetings', 'Numbers', 'Colors', 'Actions'].map((category) => (
+                    <div key={category} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <span>{category}</span>
+                      <Badge variant="outline">Available</Badge>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </TabsContent>
 
+        <TabsContent value="progress" className="space-y-6">
+          {/* Progress Overview */}
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-primary">Progress & Performance</h2>
+            <p className="text-gray-600">Track your learning journey and achievements</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer"
+                  onClick={() => navigate('/education/progress')}>
+              <CardContent className="p-6">
+                <div className="text-center space-y-4">
+                  <BarChart3 className="h-16 w-16 mx-auto text-primary" />
+                  <h3 className="text-xl font-semibold">View Detailed Progress</h3>
+                  <p className="text-gray-600">Comprehensive analytics and performance tracking</p>
+                  <Button className="w-full bg-primary hover:bg-primary/90">
+                    View Analytics
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            
             <Card className="border-primary/20">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Weekly Goal</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span>Practice Time</span>
-                    <span className="font-medium">45 min / 2 hrs</span>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-4">Quick Stats</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-3 bg-green-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-600">87%</div>
+                    <div className="text-sm text-gray-600">Avg Score</div>
                   </div>
-                  <Progress value={37.5} className="h-3" />
-                  <div className="text-center pt-2">
-                    <div className="text-2xl font-bold text-primary">3</div>
-                    <div className="text-xs text-gray-600">Days this week</div>
+                  <div className="text-center p-3 bg-blue-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">12</div>
+                    <div className="text-sm text-gray-600">Completed</div>
+                  </div>
+                  <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                    <div className="text-2xl font-bold text-yellow-600">5</div>
+                    <div className="text-sm text-gray-600">Badges</div>
+                  </div>
+                  <div className="text-center p-3 bg-purple-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600">7</div>
+                    <div className="text-sm text-gray-600">Day Streak</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="library" className="space-y-6">
+          {/* Tutorial Library Overview */}
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-primary">Tutorial Library</h2>
+            <p className="text-gray-600">Browse and watch comprehensive lip-reading tutorials</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer"
+                  onClick={() => navigate('/education/tutorials')}>
+              <CardContent className="p-6">
+                <div className="text-center space-y-4">
+                  <Video className="h-16 w-16 mx-auto text-primary" />
+                  <h3 className="text-xl font-semibold">Browse Tutorials</h3>
+                  <p className="text-gray-600">Access our comprehensive video tutorial library</p>
+                  <Button className="w-full bg-primary hover:bg-primary/90">
+                    Explore Library
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-primary/20">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-4">Featured Categories</h3>
+                <div className="space-y-3">
+                  {[
+                    { name: 'Fundamentals', count: 12, difficulty: 'Beginner' },
+                    { name: 'Conversations', count: 8, difficulty: 'Intermediate' },
+                    { name: 'Advanced Techniques', count: 6, difficulty: 'Advanced' }
+                  ].map((category) => (
+                    <div key={category.name} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                      <div>
+                        <span className="font-medium">{category.name}</span>
+                        <div className="text-sm text-gray-500">{category.count} tutorials</div>
+                      </div>
+                      <Badge variant={category.difficulty === 'Beginner' ? 'secondary' : 
+                                    category.difficulty === 'Intermediate' ? 'default' : 'destructive'}>
+                        {category.difficulty}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-6">
+          {/* Settings Overview */}
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-primary">Education Settings</h2>
+            <p className="text-gray-600">Customize your learning experience and notifications</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer"
+                  onClick={() => navigate('/education/notifications')}>
+              <CardContent className="p-6">
+                <div className="text-center space-y-4">
+                  <Settings className="h-16 w-16 mx-auto text-primary" />
+                  <h3 className="text-xl font-semibold">Notification Settings</h3>
+                  <p className="text-gray-600">Manage practice reminders and notifications</p>
+                  <Button className="w-full bg-primary hover:bg-primary/90">
+                    Configure Settings
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-primary/20">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-4">Quick Settings</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span>Daily Reminders</span>
+                    <Badge variant="default">Enabled</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Progress Emails</span>
+                    <Badge variant="secondary">Weekly</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Achievement Alerts</span>
+                    <Badge variant="default">Enabled</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Practice Time</span>
+                    <Badge variant="outline">6:00 PM</Badge>
                   </div>
                 </div>
               </CardContent>
