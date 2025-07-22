@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AnimatedBreadcrumb from '@/components/ui/animated-breadcrumb';
+import { useFeedbackToast } from '@/components/ui/feedback-toast';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -12,10 +15,17 @@ import {
   Award,
   AlertCircle,
   CheckCircle,
-  Clock
+  Clock,
+  Download,
+  FileText,
+  PieChart,
+  LineChart
 } from 'lucide-react';
 
 const Reports = () => {
+  const feedbackToast = useFeedbackToast();
+  const [selectedFormat, setSelectedFormat] = useState('pdf');
+  
   const breadcrumbItems = [
     { title: 'Dashboard', href: '/dashboard' },
     { title: 'Performance Reports' }
@@ -107,6 +117,62 @@ const Reports = () => {
     }
   ];
 
+  // Quiz data for learning progress dashboard
+  const quizHistory = [
+    { id: '1', category: 'Basic Vowels', score: 85, date: '2024-01-15', questions: 10 },
+    { id: '2', category: 'Consonant Pairs', score: 92, date: '2024-01-14', questions: 15 },
+    { id: '3', category: 'Common Words', score: 78, date: '2024-01-13', questions: 20 },
+    { id: '4', category: 'Numbers', score: 95, date: '2024-01-12', questions: 12 },
+    { id: '5', category: 'Basic Vowels', score: 88, date: '2024-01-11', questions: 10 }
+  ];
+
+  const overallStats = {
+    averageScore: 87.6,
+    quizzesCompleted: quizHistory.length,
+    totalQuestions: quizHistory.reduce((sum, quiz) => sum + quiz.questions, 0),
+    bestCategory: 'Numbers',
+    improvementNeeded: 'Common Words'
+  };
+
+  const categoryScores = [
+    { category: 'Basic Vowels', average: 86.5, attempts: 2 },
+    { category: 'Consonant Pairs', average: 92, attempts: 1 },
+    { category: 'Common Words', average: 78, attempts: 1 },
+    { category: 'Numbers', average: 95, attempts: 1 }
+  ];
+
+  // Download report functionality
+  const handleDownloadReport = () => {
+    const reportData = {
+      generatedDate: new Date().toLocaleDateString(),
+      userStats: overallStats,
+      quizHistory,
+      categoryBreakdown: categoryScores,
+      transcriptionHistory: sessionHistory
+    };
+
+    // Simulate different file formats
+    if (selectedFormat === 'pdf') {
+      // In real app, would generate PDF
+      feedbackToast.success(
+        "PDF Report Generated",
+        "Your learning progress report has been downloaded as PDF."
+      );
+    } else if (selectedFormat === 'excel') {
+      // In real app, would generate Excel file
+      feedbackToast.success(
+        "Excel Report Generated", 
+        "Your learning progress report has been downloaded as Excel file."
+      );
+    } else if (selectedFormat === 'csv') {
+      // In real app, would generate CSV
+      feedbackToast.success(
+        "CSV Report Generated",
+        "Your learning progress report has been downloaded as CSV file."
+      );
+    }
+  };
+
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800';
@@ -134,10 +200,14 @@ const Reports = () => {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-primary/5 border border-primary/20">
+        <TabsList className="grid w-full grid-cols-4 bg-primary/5 border border-primary/20">
           <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <BarChart3 className="h-4 w-4" />
             Overview
+          </TabsTrigger>
+          <TabsTrigger value="learning" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
+            <PieChart className="h-4 w-4" />
+            Learning Progress
           </TabsTrigger>
           <TabsTrigger value="history" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <Calendar className="h-4 w-4" />
@@ -263,6 +333,158 @@ const Reports = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="learning" className="space-y-6">
+          {/* Download Report Section */}
+          <Card className="border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-primary flex items-center gap-2">
+                <Download className="h-5 w-5" />
+                Download Progress Report
+              </CardTitle>
+              <CardDescription>
+                Generate and download a comprehensive report of your learning progress
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col sm:flex-row gap-4 items-end">
+                <div className="flex-1">
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    Report Format
+                  </label>
+                  <Select value={selectedFormat} onValueChange={setSelectedFormat}>
+                    <SelectTrigger className="border-primary/20">
+                      <SelectValue placeholder="Select format" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pdf">PDF Report</SelectItem>
+                      <SelectItem value="excel">Excel Spreadsheet</SelectItem>
+                      <SelectItem value="csv">CSV Data</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button 
+                  onClick={handleDownloadReport}
+                  className="bg-primary hover:bg-primary/90 text-white"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download Report
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Overall Learning Statistics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card className="border-primary/20">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-primary">{overallStats.averageScore}%</div>
+                <div className="text-sm text-gray-600">Average Score</div>
+              </CardContent>
+            </Card>
+            <Card className="border-primary/20">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-primary">{overallStats.quizzesCompleted}</div>
+                <div className="text-sm text-gray-600">Quizzes Completed</div>
+              </CardContent>
+            </Card>
+            <Card className="border-primary/20">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-primary">{overallStats.totalQuestions}</div>
+                <div className="text-sm text-gray-600">Total Questions</div>
+              </CardContent>
+            </Card>
+            <Card className="border-primary/20">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-green-600">{overallStats.bestCategory}</div>
+                <div className="text-sm text-gray-600">Best Category</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quiz Scores Over Time Chart */}
+          <Card className="border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-primary flex items-center gap-2">
+                <LineChart className="h-5 w-5" />
+                Quiz Scores Over Time
+              </CardTitle>
+              <CardDescription>Track your performance improvement</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {quizHistory.slice().reverse().map((quiz, index) => (
+                  <div key={quiz.id} className="flex items-center justify-between p-3 border border-primary/10 rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium text-primary">
+                        {quizHistory.length - index}
+                      </div>
+                      <div>
+                        <div className="font-medium">{quiz.category}</div>
+                        <div className="text-sm text-gray-600">{quiz.date}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-sm text-gray-600">{quiz.questions} questions</div>
+                      <div className={`text-lg font-bold ${quiz.score >= 90 ? 'text-green-600' : quiz.score >= 80 ? 'text-yellow-600' : 'text-red-600'}`}>
+                        {quiz.score}%
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Category Performance Breakdown */}
+          <Card className="border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-primary flex items-center gap-2">
+                <PieChart className="h-5 w-5" />
+                Performance by Category
+              </CardTitle>
+              <CardDescription>Average scores broken down by quiz categories</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {categoryScores.map((category, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{category.category}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-600">{category.attempts} attempt{category.attempts > 1 ? 's' : ''}</span>
+                        <span className="font-bold">{category.average}%</span>
+                      </div>
+                    </div>
+                    <Progress value={category.average} className="h-2" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Learning Recommendations */}
+          {overallStats.averageScore < 85 && (
+            <Card className="border-yellow-200 bg-yellow-50">
+              <CardHeader>
+                <CardTitle className="text-yellow-800 flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5" />
+                  Learning Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-yellow-800">
+                  <p>Based on your current performance, we recommend:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Focus more practice on "{overallStats.improvementNeeded}" category</li>
+                    <li>Try to maintain consistent daily practice sessions</li>
+                    <li>Review tutorial videos for challenging topics</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="history" className="space-y-6">

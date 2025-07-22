@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import AnimatedBreadcrumb from '@/components/ui/animated-breadcrumb';
 import { useFeedbackToast } from '@/components/ui/feedback-toast';
 import { 
@@ -17,7 +19,9 @@ import {
   Trash2, 
   Search,
   Filter,
-  Download
+  Download,
+  Edit3,
+  CalendarDays
 } from 'lucide-react';
 
 interface TranscriptionRecord {
@@ -35,9 +39,14 @@ const TranscriptionHistory = () => {
   const feedbackToast = useFeedbackToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'realtime' | 'upload'>('all');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
+  const [transcriptionList, setTranscriptionList] = useState<TranscriptionRecord[]>([]);
 
   // Mock data - in real app, this would come from API
-  const transcriptions: TranscriptionRecord[] = [
+  const initialTranscriptions: TranscriptionRecord[] = [
     {
       id: '1',
       fileName: 'presentation_video.mp4',
@@ -76,6 +85,11 @@ const TranscriptionHistory = () => {
     }
   ];
 
+  // Initialize transcription list
+  React.useEffect(() => {
+    setTranscriptionList(initialTranscriptions);
+  }, []);
+
   const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -87,23 +101,85 @@ const TranscriptionHistory = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const filteredTranscriptions = transcriptions.filter(transcription => {
+  const filteredTranscriptions = transcriptionList.filter(transcription => {
     const matchesSearch = transcription.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          transcription.preview.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterType === 'all' || transcription.type === filterType;
-    return matchesSearch && matchesFilter;
+    
+    // Date range filter
+    let matchesDate = true;
+    if (dateRange.start || dateRange.end) {
+      const transcriptionDate = transcription.createdAt;
+      if (dateRange.start) {
+        const startDate = new Date(dateRange.start);
+        matchesDate = matchesDate && transcriptionDate >= startDate;
+      }
+      if (dateRange.end) {
+        const endDate = new Date(dateRange.end);
+        endDate.setHours(23, 59, 59, 999); // Include the entire end date
+        matchesDate = matchesDate && transcriptionDate <= endDate;
+      }
+    }
+    
+    return matchesSearch && matchesFilter && matchesDate;
   });
 
   const handleView = (id: string) => {
     navigate(`/transcription-result/${id}`);
   };
 
-  const handleDelete = (id: string, fileName: string) => {
-    // In real app, this would call an API
+  const handleRename = (id: string, currentName: string) => {
+    setEditingId(id);
+    setEditingTitle(currentName);
+  };
+
+  const handleSaveRename = () => {
+    if (!editingTitle.trim()) {
+      feedbackToast.error("Validation Error", "Title cannot be empty.");
+      return;
+    }
+    
+    if (editingTitle.length > 100) {
+      feedbackToast.error("Validation Error", "Title cannot exceed 100 characters.");
+      return;
+    }
+
+    // Update the transcription list
+    setTranscriptionList(prev => 
+      prev.map(t => 
+        t.id === editingId 
+          ? { ...t, fileName: editingTitle.trim() }
+          : t
+      )
+    );
+
+    feedbackToast.success(
+      "Transcription Renamed",
+      `Successfully updated transcription title.`
+    );
+    
+    setEditingId(null);
+    setEditingTitle('');
+  };
+
+  const handleCancelRename = () => {
+    setEditingId(null);
+    setEditingTitle('');
+  };
+
+  const handleDeleteConfirm = (id: string) => {
+    const transcription = transcriptionList.find(t => t.id === id);
+    if (!transcription) return;
+
+    // Remove from list
+    setTranscriptionList(prev => prev.filter(t => t.id !== id));
+    
     feedbackToast.success(
       "Transcription Deleted",
-      `"${fileName}" has been removed from your history.`
+      `"${transcription.fileName}" has been permanently deleted.`
     );
+    
+    setDeleteDialogId(null);
   };
 
   const handleExport = (id: string, fileName: string) => {
@@ -133,7 +209,7 @@ const TranscriptionHistory = () => {
         </p>
       </div>
 
-      {transcriptions.length === 0 ? (
+      {transcriptionList.length === 0 ? (
         <Card className="border-primary/20">
           <CardContent className="py-12">
             <div className="text-center">
@@ -178,6 +254,24 @@ const TranscriptionHistory = () => {
                     <option value="upload">File Upload</option>
                   </select>
                 </div>
+                <div className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-gray-500" />
+                  <Input
+                    type="date"
+                    placeholder="Start Date"
+                    value={dateRange.start}
+                    onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                    className="border-primary/20 focus:border-primary text-sm"
+                  />
+                  <span className="text-gray-400">to</span>
+                  <Input
+                    type="date"
+                    placeholder="End Date"
+                    value={dateRange.end}
+                    onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                    className="border-primary/20 focus:border-primary text-sm"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -191,9 +285,45 @@ const TranscriptionHistory = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
                         <FileVideo className="h-5 w-5 text-primary shrink-0" />
-                        <h3 className="font-medium text-gray-900 truncate">
-                          {transcription.fileName}
-                        </h3>
+                        {editingId === transcription.id ? (
+                          <div className="flex items-center gap-2 flex-1">
+                            <Input
+                              value={editingTitle}
+                              onChange={(e) => setEditingTitle(e.target.value)}
+                              className="flex-1 border-primary/20 focus:border-primary"
+                              placeholder="Enter new title..."
+                            />
+                            <Button
+                              size="sm"
+                              onClick={handleSaveRename}
+                              className="bg-primary hover:bg-primary/90 text-white"
+                            >
+                              Save
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={handleCancelRename}
+                              className="border-gray-300"
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <h3 className="font-medium text-gray-900 truncate">
+                              {transcription.fileName}
+                            </h3>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRename(transcription.id, transcription.fileName)}
+                              className="h-6 w-6 p-0 hover:bg-primary/10"
+                            >
+                              <Edit3 className="h-3 w-3" />
+                            </Button>
+                          </>
+                        )}
                         <Badge 
                           variant="outline"
                           className={`${
@@ -245,14 +375,35 @@ const TranscriptionHistory = () => {
                         <Download className="h-3 w-3 mr-1" />
                         Export
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleDelete(transcription.id, transcription.fileName)}
-                        className="border-red-200 text-red-600 hover:bg-red-50"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-red-200 text-red-600 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Transcription</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to permanently delete "{transcription.fileName}"? 
+                              This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={() => handleDeleteConfirm(transcription.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Confirm Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
                 </CardContent>

@@ -31,6 +31,7 @@ import UserManagement from "./pages/admin/UserManagement";
 import ContentManagement from "./pages/admin/ContentManagement";
 import SystemAnalytics from "./pages/admin/SystemAnalytics";
 import EditFAQ from "./pages/admin/EditFAQ";
+import FeedbackSubmission from "./pages/FeedbackSubmission";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -145,6 +146,13 @@ const App = () => (
               <ProtectedRoute>
                 <DashboardLayout>
                   <Profile />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/feedback" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <FeedbackSubmission />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
