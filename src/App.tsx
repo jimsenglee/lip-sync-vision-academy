@@ -30,6 +30,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import ContentManagement from "./pages/admin/ContentManagement";
 import SystemAnalytics from "./pages/admin/SystemAnalytics";
+import UserLearningAnalytics from "./pages/admin/UserLearningAnalytics";
+import ContentInteractionAnalytics from "./pages/admin/ContentInteractionAnalytics";
 import EditFAQ from "./pages/admin/EditFAQ";
 import FeedbackSubmission from "./pages/FeedbackSubmission";
 import NotFound from "./pages/NotFound";
@@ -197,6 +199,20 @@ const App = () => (
               <ProtectedRoute requiredRole="admin">
                 <DashboardLayout>
                   <SystemAnalytics />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/user-analytics" element={
+              <ProtectedRoute requiredRole="admin">
+                <DashboardLayout>
+                  <UserLearningAnalytics />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/content-analytics" element={
+              <ProtectedRoute requiredRole="admin">
+                <DashboardLayout>
+                  <ContentInteractionAnalytics />
                 </DashboardLayout>
               </ProtectedRoute>
             } />

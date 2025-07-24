@@ -11,7 +11,9 @@ import {
   Users, 
   Settings,
   FileText,
-  Activity
+  Activity,
+  TrendingUp,
+  MessageSquare
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -31,6 +33,8 @@ const Sidebar = () => {
     { name: 'User Management', href: '/admin/users', icon: Users },
     { name: 'Content Management', href: '/admin/content', icon: FileText },
     { name: 'System Analytics', href: '/admin/analytics', icon: Activity },
+    { name: 'User Learning Analytics', href: '/admin/user-analytics', icon: TrendingUp },
+    { name: 'Content & Feedback Analytics', href: '/admin/content-analytics', icon: MessageSquare },
   ];
 
   const navigation = user?.role === 'admin' ? adminNavigation : userNavigation;

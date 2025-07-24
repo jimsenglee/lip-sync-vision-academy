@@ -146,10 +146,6 @@ const Education = () => {
 
       <Tabs defaultValue="courses" className="w-full">
         <TabsList className="grid w-full grid-cols-6 bg-primary/10">
-          <TabsTrigger value="courses" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
-            <BookOpen className="h-4 w-4" />
-            Tutorials
-          </TabsTrigger>
           <TabsTrigger value="quizzes" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
             <Brain className="h-4 w-4" />
             Quizzes
